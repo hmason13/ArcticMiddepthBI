@@ -1,0 +1,11 @@
+ &KPP_PARM01
+
+ kpp_freq=1e4,
+ kpp_dumpFreq=5e5,
+
+ KPPwriteState   = .TRUE.,
+ KPP_ghatUseTotalDiffus=.FALSE.,
+
+&
+
+

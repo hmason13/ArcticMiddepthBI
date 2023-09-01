@@ -1,0 +1,26 @@
+# RBCS package parameters:
+ &RBCS_PARM01
+ useRBCtemp=.TRUE.,
+ tauRelaxT=1728000.,
+ relaxMaskFile(1)='restore.bin',
+ relaxTFile='temp-2km.bin'
+
+ useRBCsalt=.TRUE.,
+ tauRelaxS=1728000.,
+ relaxMaskFile(2)='restore.bin',
+ relaxSFile='saltUnperturbed-2km.bin',
+
+ useRBCuVel=.TRUE.,
+ tauRelaxU=1728000.,
+ relaxMaskUFile='restore.bin',
+ relaxUFile='u-2km.bin'
+
+ useRBCvVel=.TRUE.,
+ tauRelaxV=1728000.,
+ relaxMaskVFile='restore.bin',
+ relaxVFile='v-2km.bin'
+ &
+
+# RBCS for pTracers (read this namelist only when ptracers pkg is compiled)
+ &RBCS_PARM02
+ &

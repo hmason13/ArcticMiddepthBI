@@ -1,0 +1,33 @@
+#
+# *********************
+# External Forcing Data
+# *********************
+ &EXF_NML_01
+#
+ useExfCheckRange  = .TRUE.,
+#repeatPeriod      = 1.0e4,
+ exf_iprec         = 32,
+#
+ &
+
+# *********************
+ &EXF_NML_02
+#hfluxfile         = 'hfuxfile',
+#sfluxfile         = 'sfluxfile',
+#ustressfile       = ' ',
+#vstressfile       = ' ',
+#lwfluxfile        = 'lwfluxfile',
+#swfluxfile        = 'swfluxfile',
+#lwdownfile        = 'lwdownfile',
+#swdownfile        = 'swdownfile',
+#runoffFile        = 'runoffFile',
+#
+ &
+
+# *********************
+ &EXF_NML_03
+ &
+
+# *********************
+ &EXF_NML_04
+ &
