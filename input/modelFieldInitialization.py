@@ -169,7 +169,7 @@ horizDGHalfs = np.sqrt(zonalDGHalfs**2 + meridDGHalfs**2)
 
 
 # generate density field
-rho = (rhoProfile[:,np.newaxis,np.newaxis]
+rho = np.ones((nz,ny,nx))*(rhoProfile[:,np.newaxis,np.newaxis]
        +(horizDG[:,np.newaxis,np.newaxis]*func[np.newaxis,np.newaxis,:]))
 
 # save u:
@@ -178,7 +178,7 @@ u.astype('>f4').tofile('u-2km.bin')
 
 
 # generate v from thermal wind balance: 0m/s at domain floor
-vertiShear = horizDGHalfs[:,np.newaxis,np.newaxis]*funcPrime[:-1,:,:]*g/rhoConst/f0 
+vertiShear = -horizDGHalfs[:,np.newaxis,np.newaxis]*funcPrime[:-1,:,:]*g/rhoConst/f0 
 velocities = np.zeros(shape=(nz,ny,nx))
 for i in range(49,0,-1):
     velocities[i-1,:,:] = velocities[i,:,:] + vertiShear[i-1,:,:]*zDelta[i-1]

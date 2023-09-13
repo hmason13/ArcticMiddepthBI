@@ -88,5 +88,5 @@
  hydrogSaltFile='perturbedSalt-2km.bin',
  vVelInitFile='v-2km.bin',
  uVelInitFile='u-2km.bin',
- pSurfInitFile='eta-2km.bin'
+ pSurfInitFile='eta-2km.bin',
  &
