@@ -65,10 +65,6 @@ dataArray2.fill_value=np.nan
 dataDensities = dataArray1.mean(0)
 dataNSquares = dataArray2.mean(0) * g / rhoConst
 
-# print lat and lon ranges
-print(f"Longitude ranges from {lons[0]} to {lons[-1]}")
-print(f"Latitude ranges from {lats[0]} to {lats[-1]}")
-
 # generate hydrostatic pressure field
 pressure = np.zeros((nz+dVI,latRange,lonRange))
 for i in range(50+dVI):
