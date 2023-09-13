@@ -2,8 +2,8 @@
  &SEAICE_PARM01
 #- seaice dynamics params:
 # LSR_ERROR          = 1.E-12,
-  HeffFile='iceHeffLowRes.bin',
-  AreaFile='iceAreaLowRes.bin',
+  HeffFile='iceHeff2km.bin',
+  AreaFile='iceArea2km.bin',
 # HsnowFile='HsnowFile',
 # HsaltFile='HsaltFile',	
   SEAICEscaleSurfStress = .TRUE.,

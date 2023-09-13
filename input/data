@@ -26,7 +26,7 @@
  eosType='LINEAR',
  tAlpha=0,
  sBeta=7.4E-4,
- sRef=33.,
+ sRef=28.,
  tRef=0.,
  rhonil=1029.,
 
@@ -85,7 +85,7 @@
 # zonalWindFile='zonalWindFile.bin',
 # thetaClimFile='thetaClimFile.bin',
  hydrogThetaFile='temp-2km.bin',
- hydrogSaltFile='salt-2km.bin',
+ hydrogSaltFile='perturbedSalt-2km.bin',
  vVelInitFile='v-2km.bin',
  uVelInitFile='u-2km.bin',
  pSurfInitFile='eta-2km.bin'

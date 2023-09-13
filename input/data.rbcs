@@ -8,7 +8,7 @@
  useRBCsalt=.TRUE.,
  tauRelaxS=1728000.,
  relaxMaskFile(2)='restore.bin',
- relaxSFile='saltUnperturbed-2km.bin',
+ relaxSFile='salt-2km.bin',
 
  useRBCuVel=.TRUE.,
  tauRelaxU=1728000.,

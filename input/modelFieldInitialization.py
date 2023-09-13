@@ -172,15 +172,9 @@ horizDG = np.sqrt(zonalDG**2 + meridDG**2)
 horizDGHalfs = np.sqrt(zonalDGHalfs**2 + meridDGHalfs**2)
 
 
-# small perturbation for density field
-pturb  = np.fromfunction(lambda z,y,x: horizDG.max()*1e-3*np.sin(y/10), (nz,ny,nx))
-pturb *= funcPrime # pturb -> 0 @ boundaries
-
-
 # generate density field
-rho = (rhoProfile[:,np.newaxis,np.newaxis] 
-       +(horizDG[:,np.newaxis,np.newaxis]*func[np.newaxis,np.newaxis,:])
-       +(pturb))
+rho = (rhoProfile[:,np.newaxis,np.newaxis]
+       +(horizDG[:,np.newaxis,np.newaxis]*func[np.newaxis,np.newaxis,:]))
 
 # save u:
 u = np.zeros((nz,ny,nx))
@@ -201,11 +195,19 @@ salt = (salt-1) / sBeta
 salt = salt + s0
 salt.astype('>f4').tofile('salt-2km.bin')
 
+# generate perturbed salt field
+pSalt = salt + np.fromfunction(lambda z,y,x: 1e-4*np.sin(y/10), (nz,ny,nx))
+pSalt.astype('>f4').tofile('perturbedSalt-2km.bin')
+
 # generate temp (not evolved in model)
 temp = np.ones((nz,ny,nx))
 temp.astype('>f4').tofile('temp-2km.bin')
 
 # generate SSH
+eta  = (rho*dz[:,np.newaxis,np.newaxis]).sum(0) - rhoConst*dz.sum(0)
+eta /= -rho[0,:,:]
+eta += -eta.mean()
+eta.astype('>f4').tofile('eta-2km.bin')
 
 # generate bathymetry
 bathy = -1*np.ones((ny,nx))*dz.sum()
