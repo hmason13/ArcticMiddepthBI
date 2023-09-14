@@ -35,6 +35,7 @@
  no_slip_bottom=.TRUE.,
  bottomDragQuadratic=0.0021,
  implicitFreeSurface=.TRUE.,
+ linFSConserveTr=.TRUE.,
  
 # physical parameters
  f0=1.4E-04,
