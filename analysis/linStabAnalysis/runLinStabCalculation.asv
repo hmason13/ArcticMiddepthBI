@@ -1,0 +1,18 @@
+% Load mat variables
+data = load("modelProfilesForQgLinStab");
+depth= data.depth;
+rho  = data.rho;
+uVel = data.uVel;
+vVel = data.vVel;
+bigF = data.bigF;
+beta = data.beta;
+betaT= data.betaT;
+
+% initialize choice of wavenumbers
+myVecK = linspace(-5,-1,100);
+myVecL = linspace(-5,-1,100);
+
+% Call qggrz function
+[h1, h2, h3] = qggrz(depth,rho,uVel,vVel,bigF,beta,betaT,myVecK,myVecL,1);
+
+% test

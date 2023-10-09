@@ -59,13 +59,15 @@ end
 nkx = length(kvec);  nky = length(lvec); nz = max(length(U),length(V));
 
 % Columnize
-z = z(:); rho = rho(:); U = U(:); V = V(:); 
+z = z(:);
+rho = rho(:);
+U = U(:); V = V(:); 
 
 % Find layer thicknesses dz
 dz = get_dz(z);
 
 % Stretching operator
-G = pv_stretch_op(dz,rho,F,dim);
+G = pv_stretch_opz(z,rho,F,dim);
 
 % Mean PV gradients
 Q_x    = G*V;
