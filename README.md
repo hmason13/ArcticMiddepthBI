@@ -1,5 +1,5 @@
 # arcticMiddepthBI
-Welcome! Please note this experiment is still under construction as of 1 Sep 2023.
+Welcome! Please note this experiment is still under construction as of 11 Oct 2023.
 
 ## Experiment description
 This experiment represents a flat-bottom channel initialized with a balanced & baroclinically unstable
