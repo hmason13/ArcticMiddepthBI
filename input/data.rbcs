@@ -1,6 +1,6 @@
 # RBCS package parameters:
  &RBCS_PARM01
- useRBCtemp=.TRUE.,
+ useRBCtemp=.FALSE.,
  tauRelaxT=1728000.,
  relaxMaskFile(1)='restore.bin',
  relaxTFile='temp-2km.bin'

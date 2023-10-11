@@ -1,27 +1,145 @@
+%% Load data
 % Load mat variables
 data = load("modelProfilesForQgLinStab");
-depth= data.depth;
-rho  = data.rho;
-uVel = data.vVel;
-vVel = data.uVel;
-bigF = data.bigF;
-beta = data.beta;
-betaT= [0,0];
+depthRaw= -1 * data.depth;
+rhoRaw  = data.rho;
+uVelRaw = data.uVel;
+vVelRaw = data.vVel;
+bigF  = data.bigF;
+beta  = data.beta;
+betaT = [0,0];
+
+%% Prepare grid
 
 % initialize choice of wavenumbers
-myVecK = logspace(-3.5,-1.5,1000);
-myVecL = logspace(-4.5,-2.5,1000);
+myVecK = logspace(-6,-1,200);
+myVecL = 0;
 
-%% 
+% initialize vertical grid
+%   ensure that the new grid does not extend past range
+%   of the old grid
+depth = -1*linspace(5,2700,750);
+newDZ = depth(1:end-1) - depth(2:end);
+oldDZ = depthRaw(1:end-1) - depthRaw(2:end);
+
+% interpolate to new grid
+rho = interp1(depthRaw, rhoRaw, depth, "linear");
+uVel = interp1(depthRaw, uVelRaw, depth, "linear");
+vVel = interp1(depthRaw, vVelRaw, depth, "linear");
+
+%% Call qggrz
 
 % Call qggrz function
 [wiMax, wrMax, psiVec] = qggrz(depth,rho,uVel,vVel,bigF,beta,betaT,myVecK,myVecL,1);
 
-%% 
+%% Figure 1
 
-% test
-max(wrMax,[],"all")
-max(wiMax,[],"all")
-contourf(myVecL,myVecK,wiMax)
+% growth rate from 1/s to 1/day
+secPerDay = 60*60*24;
+
+% plot
+tiledlayout(2,1)
+
+nexttile
+plot(myVecK,squeeze(wiMax)*secPerDay)
 set(gca, "XScale", "log")
-set(gca, "YScale", "log")
+set(gca, "YScale", "linear")
+xlabel("Wavenumber (1/m)")
+ylabel("Growth rate (1/day)")
+title("Growth rate of most unstable mode")
+
+nexttile
+plot(myVecK,squeeze(wrMax)*secPerDay)
+set(gca,"XScale", "log")
+set(gca,"YScale", "linear")
+xlabel("Wavenumber (1/m)")
+ylabel("Frequency (1/day)")
+title("Oscillation frequency of most unstable mode")
+
+%% Figure 2
+figure(2)
+tiledlayout(1,2)
+
+nexttile
+hold on
+plot(rho,depth,"DisplayName","Interpolated")
+plot(rhoRaw,depthRaw,"DisplayName","Imported")
+xlabel("Density (kg/m3")
+ylabel("Depth (m)")
+title("Density profiles")
+legend("Location","southwest")
+hold off
+
+nexttile
+hold on
+drdz = (-rho(1:end-1)+rho(2:end)) ./ newDZ;
+plot(log10(drdz),(depth(1:end-1)+depth(2:end))/2, ...
+    "DisplayName","Interpolated")
+oldDrDz = (-rhoRaw(1:end-1)+rhoRaw(2:end)) ./ oldDZ;
+plot(log10(oldDrDz),(depthRaw(1:end-1)+depthRaw(2:end))/2, ...
+    "DisplayName","Imported")
+xlabel("log10 N^2 (1/s^2)")
+ylabel("Depth (m)")
+title("Stratification Profiles")
+legend("Location","southeast")
+hold off
+
+%% Figure 3
+vnum = 3; % changes # of vectors displayed
+fnum = 5; % change wave# ranges
+mark = fix(length(myVecK)/fnum);
+nark = fix(length(myVecK)/(fnum*10));
+
+figure(3)
+tiledlayout(1,4)
+
+nexttile;
+hold on
+for index = 1:nark:(nark*vnum + 1)
+   plotData = squeeze(real(psiVec(index,1,:)));
+   plot(plotData,depth,"DisplayName",sprintf("%.4g",myVecK(index)))
+end
+title("Real(eigvec), low k")
+ylabel("Depth (m)")
+%legend("Location","west","FontSize",6)
+hold off
+
+nexttile;
+hold on
+for index = mark:nark:(nark*vnum + 1 + mark)
+   plotData = squeeze(real(psiVec(index,1,:)));
+   plot(plotData,depth,"DisplayName",sprintf("%.4g",myVecK(index)))
+end
+title("Real(eigvec), mid k")
+ylabel("Depth (m)")
+%legend("Location","west","FontSize",6)
+hold off
+
+nexttile;
+hold on
+for index = 2*mark:nark:(nark*vnum + 1 + 2*mark)
+   plotData = squeeze(real(psiVec(index,1,:)));
+   plot(plotData,depth,"DisplayName",sprintf("%.4g",myVecK(index)))
+end
+title("Real(eigvec), high k")
+ylabel("Depth (m)")
+%legend("Location","west","FontSize",6)
+hold off
+
+nexttile;
+hold on
+for index = 3*mark:nark:(nark*vnum + 1 + 3*mark)
+   plotData = squeeze(real(psiVec(index,1,:)));
+   plot(plotData,depth,"DisplayName",sprintf("%.4g",myVecK(index)))
+end
+title("Real(eigvec), tops k")
+ylabel("Depth (m)")
+%legend("Location","west","FontSize",6)
+hold off
+
+%% Save figures
+
+loc = "/home/hcm7920/experiments/arcticMiddepthBI/plots/linStab/";
+exportgraphics(figure(1), loc+"eigVals.png", "Resolution", 600);
+exportgraphics(figure(2), loc+"densityProfiles.png", "Resolution", 600);
+exportgraphics(figure(3), loc+"eigVecs.png", "Resolution", 600);

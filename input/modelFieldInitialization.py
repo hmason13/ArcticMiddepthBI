@@ -212,6 +212,7 @@ bathy.astype('>f4').tofile('bathy-2km.bin')
 
 # generate restoring mask
 mask = np.ones((nz,ny,nx))
+mask[:,:,-1] = 0 # turn off inside wall
 mask.astype('>f4').tofile('restore.bin')
 
 # generate cice

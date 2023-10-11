@@ -1,4 +1,4 @@
-function dz = get_dz(z);
+function dz = get_dz(z)
 
 %   dz = get_dz(z)
 %
