@@ -12,13 +12,13 @@ betaT = [0,0];
 %% Prepare grid
 
 % initialize choice of wavenumbers
-myVecK = logspace(-6,-1,200);
+myVecK = logspace(-6,-1,50);
 myVecL = 0;
 
 % initialize vertical grid
 %   ensure that the new grid does not extend past range
 %   of the old grid
-depth = -1*linspace(5,2700,750);
+depth = -1*linspace(5,2700,100);
 newDZ = depth(1:end-1) - depth(2:end);
 oldDZ = depthRaw(1:end-1) - depthRaw(2:end);
 
@@ -139,7 +139,7 @@ hold off
 
 %% Save figures
 
-loc = "/home/hcm7920/experiments/arcticMiddepthBI/plots/linStab/";
-exportgraphics(figure(1), loc+"eigVals.png", "Resolution", 600);
-exportgraphics(figure(2), loc+"densityProfiles.png", "Resolution", 600);
-exportgraphics(figure(3), loc+"eigVecs.png", "Resolution", 600);
+%loc = "/home/hcm7920/experiments/arcticMiddepthBI/plots/linStab/";
+%exportgraphics(figure(1), loc+"eigVals.png", "Resolution", 600);
+%exportgraphics(figure(2), loc+"densityProfiles.png", "Resolution", 600);
+%exportgraphics(figure(3), loc+"eigVecs.png", "Resolution", 600);
