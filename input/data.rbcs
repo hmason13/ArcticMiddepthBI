@@ -5,17 +5,17 @@
  relaxMaskFile(1)='restore.bin',
  relaxTFile='temp-2km.bin'
 
- useRBCsalt=.TRUE.,
+ useRBCsalt=.FALSE.,
  tauRelaxS=1728000.,
  relaxMaskFile(2)='restore.bin',
  relaxSFile='salt-2km.bin',
 
- useRBCuVel=.TRUE.,
+ useRBCuVel=.FALSE.,
  tauRelaxU=1728000.,
  relaxMaskUFile='restore.bin',
  relaxUFile='u-2km.bin'
 
- useRBCvVel=.TRUE.,
+ useRBCvVel=.FALSE.,
  tauRelaxV=1728000.,
  relaxMaskVFile='restore.bin',
  relaxVFile='v-2km.bin'

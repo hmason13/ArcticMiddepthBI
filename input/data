@@ -38,6 +38,7 @@
  nonlinFreeSurf=4,
  hFacInf=0.1,
  exactConserv=.TRUE.,
+ linFSConserveTr=.TRUE.,
  
 # physical parameters
  f0=1.4E-04,
