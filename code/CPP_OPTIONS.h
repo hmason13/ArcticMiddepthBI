@@ -8,10 +8,10 @@ C CPP flags controlling particular source code features
 
 C o Shortwave heating as extra term in external_forcing.F
 C Note: this should be a run-time option
-#undef SHORTWAVE_HEATING
+C necessary for KPP package -hassan
+#define SHORTWAVE_HEATING
 
-C adding this option so that lwdown works?
-C hassan
+C adding this option so that lwdown works? -hassan
 #undef ALLOW_DOWNWARD_RADIATION
 
 #define DISABLE_SEAICE_GROWTH
@@ -54,7 +54,7 @@ C   so that d/dt(eta) is exactly equal to - Div.Transport
 
 C o Allow the use of Non-Linear Free-Surface formulation
 C   this implies that surface thickness (hFactors) vary with time
-#undef NONLIN_FRSURF
+#define NONLIN_FRSURF
 
 C o ALLOW isotropic scaling of harmonic and bi-harmonic terms when
 C   using an locally isotropic spherical grid with (dlambda) x (dphi*cos(phi))

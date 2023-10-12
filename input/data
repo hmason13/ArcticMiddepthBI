@@ -32,7 +32,12 @@
  no_slip_sides=.FALSE.,
  no_slip_bottom=.TRUE.,
  bottomDragQuadratic=0.0021,
+ 
+# free surface params
  implicitFreeSurface=.TRUE.,
+ nonlinFreeSurf=4,
+ hFacInf=0.1,
+ exactConserv=.TRUE.,
  
 # physical parameters
  f0=1.4E-04,
@@ -42,9 +47,6 @@
 # implicit diffusion and convective adjustment
  implicitDiffusion=.TRUE.,
  implicitViscosity=.TRUE.,
-
-# exact volume conservation
-  exactConserv=.TRUE.,
 
 # C-V scheme for Coriolis term
  useCDscheme=.FALSE.,
