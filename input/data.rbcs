@@ -1,21 +1,21 @@
 # RBCS package parameters:
  &RBCS_PARM01
- useRBCtemp=.FALSE.,
+ useRBCtemp=.TRUE.,
  tauRelaxT=1728000.,
  relaxMaskFile(1)='restore.bin',
  relaxTFile='temp-2km.bin'
 
- useRBCsalt=.FALSE.,
+ useRBCsalt=.TRUE.,
  tauRelaxS=1728000.,
  relaxMaskFile(2)='restore.bin',
  relaxSFile='salt-2km.bin',
 
- useRBCuVel=.FALSE.,
+ useRBCuVel=.TRUE.,
  tauRelaxU=1728000.,
  relaxMaskUFile='restore.bin',
  relaxUFile='u-2km.bin'
 
- useRBCvVel=.FALSE.,
+ useRBCvVel=.TRUE.,
  tauRelaxV=1728000.,
  relaxMaskVFile='restore.bin',
  relaxVFile='v-2km.bin'

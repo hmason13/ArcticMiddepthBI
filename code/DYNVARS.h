@@ -41,7 +41,7 @@ C           implicDiv2DFlow=1 => etaH=etaN ; =0 => etaH=etaN^(n-1);
      &                   uVel,vVel,wVel,theta,salt,
      &                   gU,   gV,
      &                   guNm, gvNm, gtNm, gsNm,
-     &                   mean_T, mean_U, mean_V
+     &                   mean_T, mean_S, mean_U, mean_V
 #else /* ALLOW_ADAMSBASHFORTH_3 */
       COMMON /DYNVARS_R/
      &                   etaN,

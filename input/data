@@ -12,11 +12,13 @@
 # diffusivity
  saltAdvScheme=7,
  diffKzS=5.44e-7,
- 
+ diffKzT=5.44e-7,
+ tempAdvScheme=7,
+
  nonHydrostatic=.FALSE.,
  saltStepping=.TRUE.,
- tempStepping=.FALSE.,
- staggerTimeStep=.TRUE.,
+ tempStepping=.TRUE.,
+ staggerTimeStep=.FALSE.,
 
 # multiDimAdvection=.TRUE.,
 # vectorInvariantMomentum=.TRUE.,
@@ -24,7 +26,7 @@
  eosType='LINEAR',
  tAlpha=0,
  sBeta=7.4E-4,
- sRef=28.,
+ sRef=33.,
  tRef=0.,
  rhonil=1029.,
 
@@ -34,11 +36,11 @@
  bottomDragQuadratic=0.0021,
  
 # free surface params
+ rigidLid=.FALSE.,
  implicitFreeSurface=.TRUE.,
- nonlinFreeSurf=4,
- hFacInf=0.1,
- exactConserv=.TRUE.,
- linFSConserveTr=.TRUE.,
+# nonlinFreeSurf=4,
+# hFacInf=0.1,
+# exactConserv=.TRUE.,
  
 # physical parameters
  f0=1.4E-04,
@@ -49,14 +51,18 @@
  implicitDiffusion=.TRUE.,
  implicitViscosity=.TRUE.,
 
+# remove momentum forcing from AB scheme
+ forcing_in_AB=.FALSE.,
+ momForcingOutAB=1,
+
 # C-V scheme for Coriolis term
  useCDscheme=.FALSE.,
  &
 
 # elliptic solver parameters
  &PARM02
- cg2dMaxIters=500,
- cg2dTargetResidual=1.000000E-09,
+ cg2dMaxIters=1000,
+ cg2dTargetResidual=1.000000E-12,
  &
 
 
