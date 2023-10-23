@@ -21,25 +21,25 @@
  &DIAGNOSTICS_LIST
   diag_mnc     = .TRUE.,
 
-  fields(1:9,1)  = 'SIarea','SIheff','SIuice','SIvice','sIceLoad','ADVxHEFF','ADVyHEFF','SIuheff','SIvheff',
-  fileName(1) = 'diagsIceGeneral',
-  frequency(1) =  43200.,
+#  fields(1:9,5)  = 'SIarea','SIheff','SIuice','SIvice','sIceLoad','ADVxHEFF','ADVyHEFF','SIuheff','SIvheff',
+#  fileName(5) = 'diagsIceGeneral',
+#  frequency(5) =  43200.,
 
-  fields(1:2,2)  = 'SIfu','SIfv',
-  fileName(2) = 'diagsIceForce',
-  frequency(2) =  43200.,
+#  fields(1:2,4)  = 'SIfu','SIfv',
+#  fileName(4) = 'diagsIceForce',
+#  frequency(4) =  43200.,
 
-  fields(1:4,3) = 'momKE','momVort3','Um_Ext','Vm_Ext',
-  fileName(3) = 'diagsDynamics',
+  fields(1:4,1) = 'momKE','momVort3','Um_Ext','Vm_Ext',
+  fileName(1) = 'diagsDynamics',
+  frequency(1) = 43200.,
+
+  fields(1:7,2) = 'WVELSLT','WVELTH','ADVr_TH','ADVr_SLT','WRHOMASS','URHOMASS','VRHOMASS',
+  fileName(2) = 'diagsFluxes',
+  frequency(2) = 43200.,
+
+  fields(1:2,3) = 'RHOAnoma','DRHODR',
+  fileName(3) = 'diagsState',
   frequency(3) = 43200.,
-
-  fields(1:7,4) = 'WVELSLT','WVELTH','ADVr_TH','ADVr_SLT','WRHOMASS','URHOMASS','VRHOMASS',
-  fileName(4) = 'diagsFluxes',
-  frequency(4) = 43200.,
-
-  fields(1:2,5) = 'RHOAnoma','DRHODR',
-  fileName(5) = 'diagsState',
-  frequency(5) = 43200.,
 
  &
  &DIAG_STATIS_PARMS

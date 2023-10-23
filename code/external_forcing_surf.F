@@ -97,13 +97,13 @@ C for each horizontal grid cell in a tile. Inefficient, but maybe not too bad?
         sum_V = 0.
         DO bj=myByLo(myThid), myByHi(myThid)
           DO bi=myBxLo(myThid), myBxHi(myThid)
-            DO i=1,sNx
+            DO i=iMin,iMax
               T_tile(bi,bj) = 0.
               S_tile(bi,bj) = 0.
               U_tile(bi,bj) = 0.
               V_tile(bi,bj) = 0.
               meridArea = 0.
-              DO j=1,sNy
+              DO j=jMin,jMax
 C               hassan: modified to mean over only meridional slices
                 T_tile(bi,bj) = T_tile(bi,bj)
      &            + rA(i,j,bi,bj)*theta(i,j,k,bi,bj)

@@ -18,10 +18,10 @@
  nonHydrostatic=.FALSE.,
  saltStepping=.TRUE.,
  tempStepping=.TRUE.,
- staggerTimeStep=.FALSE.,
-
-# multiDimAdvection=.TRUE.,
+ staggerTimeStep=.TRUE.,
+ multiDimAdvection=.TRUE.,
 # vectorInvariantMomentum=.TRUE.,
+
 # equation of state
  eosType='LINEAR',
  tAlpha=0,
@@ -38,9 +38,9 @@
 # free surface params
  rigidLid=.FALSE.,
  implicitFreeSurface=.TRUE.,
-# nonlinFreeSurf=4,
-# hFacInf=0.1,
-# exactConserv=.TRUE.,
+ nonlinFreeSurf=4,
+ hFacInf=0.1,
+ exactConserv=.TRUE.,
  
 # physical parameters
  f0=1.4E-04,
@@ -51,9 +51,6 @@
  implicitDiffusion=.TRUE.,
  implicitViscosity=.TRUE.,
 
-# remove momentum forcing from AB scheme
- forcing_in_AB=.FALSE.,
- momForcingOutAB=1,
 
 # C-V scheme for Coriolis term
  useCDscheme=.FALSE.,
@@ -75,7 +72,8 @@
  taveFreq=604800.,
  dumpFreq=43200.,
  monitorFreq=172800.,
- tracForcingOutAB=1
+ tracForcingOutAB=1,
+
 # tauThetaClimRelax=518400,
  &
 

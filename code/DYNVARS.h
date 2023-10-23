@@ -50,7 +50,7 @@ C           implicDiv2DFlow=1 => etaH=etaN ; =0 => etaH=etaN^(n-1);
      &                   guNm1,gvNm1,gtNm1,gsNm1,
      &                   mean_T, mean_S, mean_U, mean_V
 #endif /* ALLOW_ADAMSBASHFORTH_3 */
-      _RL  etaN  (1-OLx:sNx+OLx,1-OLy:sNy+OLy,nSx,nSy)
+      _RL  etaN (1-OLx:sNx+OLx,1-OLy:sNy+OLy,nSx,nSy)
       _RL  uVel (1-OLx:sNx+OLx,1-OLy:sNy+OLy,Nr,nSx,nSy)
       _RL  vVel (1-OLx:sNx+OLx,1-OLy:sNy+OLy,Nr,nSx,nSy)
       _RL  wVel (1-OLx:sNx+OLx,1-OLy:sNy+OLy,Nr,nSx,nSy)
@@ -58,10 +58,10 @@ C           implicDiv2DFlow=1 => etaH=etaN ; =0 => etaH=etaN^(n-1);
       _RL  salt (1-OLx:sNx+OLx,1-OLy:sNy+OLy,Nr,nSx,nSy)
       _RL  gU(1-OLx:sNx+OLx,1-OLy:sNy+OLy,Nr,nSx,nSy)
       _RL  gV(1-OLx:sNx+OLx,1-OLy:sNy+OLy,Nr,nSx,nSy)
-      _RL  mean_T(sNx,Nr,nSx,nSy)
-      _RL  mean_S(sNx,Nr,nSx,nSy)
-      _RL  mean_U(sNx,Nr,nSx,nSy)
-      _RL  mean_V(sNx,Nr,nSx,nSy)
+      _RL  mean_T(1-OLx:sNx+OLx,Nr,nSx,nSy)
+      _RL  mean_S(1-OLx:sNx+OLx,Nr,nSx,nSy)
+      _RL  mean_U(1-OLx:sNx+OLx,Nr,nSx,nSy)
+      _RL  mean_V(1-OLx:sNx+OLx,Nr,nSx,nSy)
 #ifdef ALLOW_ADAMSBASHFORTH_3
       _RL  guNm(1-OLx:sNx+OLx,1-OLy:sNy+OLy,Nr,nSx,nSy,2)
       _RL  gvNm(1-OLx:sNx+OLx,1-OLy:sNy+OLy,Nr,nSx,nSy,2)

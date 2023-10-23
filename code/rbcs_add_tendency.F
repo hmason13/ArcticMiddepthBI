@@ -22,7 +22,7 @@ C !USES: ===============================================================
 #include "SIZE.h"
 #include "EEPARAMS.h"
 #include "PARAMS.h"
-c#include "GRID.h"
+#include "GRID.h"
 #include "DYNVARS.h"
 #ifdef ALLOW_PTRACERS
 #include "PTRACERS_SIZE.h"
