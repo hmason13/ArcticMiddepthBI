@@ -21,13 +21,13 @@
  &DIAGNOSTICS_LIST
   diag_mnc     = .TRUE.,
 
-#  fields(1:9,5)  = 'SIarea','SIheff','SIuice','SIvice','sIceLoad','ADVxHEFF','ADVyHEFF','SIuheff','SIvheff',
-#  fileName(5) = 'diagsIceGeneral',
-#  frequency(5) =  43200.,
+  fields(1:9,5)  = 'SIarea','SIheff','SIuice','SIvice','sIceLoad','ADVxHEFF','ADVyHEFF','SIuheff','SIvheff',
+  fileName(5) = 'diagsIceGeneral',
+  frequency(5) =  43200.,
 
-#  fields(1:2,4)  = 'SIfu','SIfv',
-#  fileName(4) = 'diagsIceForce',
-#  frequency(4) =  43200.,
+  fields(1:2,4)  = 'SIfu','SIfv',
+  fileName(4) = 'diagsIceForce',
+  frequency(4) =  43200.,
 
   fields(1:4,1) = 'momKE','momVort3','Um_Ext','Vm_Ext',
   fileName(1) = 'diagsDynamics',
