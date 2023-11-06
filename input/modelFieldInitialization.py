@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import netCDF4 as nc
 import scipy.interpolate as terp
 import scipy.integrate as teg
+import sys
 
 # grid constants
 nx = 250
@@ -215,7 +216,7 @@ mask = np.ones((nz,ny,nx))
 mask.astype('>f4').tofile('restore.bin')
 
 # generate cice
-concentration = 0.00 # float between 0 and 1
+concentration = float(sys.argv[1]) # float between 0 and 1
 area = concentration * np.ones((ny,nx))
 heff = area * 2 # effective thickness, (ice doesn't melt or grow!)
 area.astype('>f4').tofile("iceArea2km.bin")

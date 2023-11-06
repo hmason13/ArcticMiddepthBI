@@ -2,7 +2,7 @@
  monitor_mnc=.TRUE.,
  mnc_use_outdir=.TRUE.,
  mnc_outdir_str='mnc_',
- pickup_write_mnc=.TRUE.,
- pickup_read_mnc=.TRUE.,
+ pickup_write_mnc=.FALSE.,
+ pickup_read_mnc=.FALSE.,
  &
  

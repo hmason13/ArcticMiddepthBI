@@ -17,7 +17,7 @@
 
  nonHydrostatic=.FALSE.,
  saltStepping=.TRUE.,
- tempStepping=.TRUE.,
+ tempStepping=.FALSE.,
  staggerTimeStep=.TRUE.,
  multiDimAdvection=.TRUE.,
 # vectorInvariantMomentum=.TRUE.,
@@ -65,24 +65,24 @@
 
 # timestepping parameters
  &PARM03
-# deltaT=200.0,
-# nIter0=0,
-# nTimeSteps=388800,
-# pChkptFreq=25920000.,
-# taveFreq=604800.,
-# dumpFreq=43200.,
-# monitorFreq=172800.,
+ deltaT=400.0,
+ nIter0=0,
+ nTimeSteps=788400,
+ taveFreq=1036800.,
+ dumpFreq=1036800.,
+ monitorFreq=172800.,
 
 # timestepping parameters for pickup
- deltaT=200.0,
- nIter=388800,
- nTimeSteps=388800,
- taveFreq=604800.,
- dumpFreq=129600.,
- monitorFreq=518400.,
- writePickupAtEnd=.TRUE.,
+# deltaT=200.0,
+# nIter0=388800,
+# nTimeSteps=388800,
+# taveFreq=604800.,
+# dumpFreq=129600.,
+# monitorFreq=518400.,
 
-tracForcingOutAB=1,
+ writePickupAtEnd=.TRUE.,
+ tracForcingOutAB=1,
+ pickupStrictlyMatch=.FALSE.,
 
 # tauThetaClimRelax=518400,
  &
@@ -94,6 +94,7 @@ tracForcingOutAB=1,
  dYspacing=2.E03,
  delRFile='eccoZCoordSpacingPadded.bin',
  &
+
 # Input datasets
  &PARM05
  bathyFile='bathy-2km.bin',
