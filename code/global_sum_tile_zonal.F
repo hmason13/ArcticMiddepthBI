@@ -1,24 +1,24 @@
 #include "CPP_EEOPTIONS.h"
 
-C--   File global_sum_tile_merid.F: Routines that perform global sum
+C--   File global_sum_tile_ZONAL.F: Routines that perform global sum
 C                             on a tile array
 C      Contents
-C      o GLOBAL_SUM_TILE_MERID
+C      o GLOBAL_SUM_TILE_ZONAL
 C      Author
 C      Adapted from original global_sum_tile.F by hassan, NYU 
 C---+----1----+----2----+----3----+----4----+----5----+----6----+----7-|--+----|
 CBOP
-C     !ROUTINE: GLOBAL_SUM_TILE_MERID
+C     !ROUTINE: GLOBAL_SUM_TILE_ZONAL
 
 C     !INTERFACE:
-      SUBROUTINE GLOBAL_SUM_TILE_MERID(
+      SUBROUTINE GLOBAL_SUM_TILE_ZONAL(
      I                       phiTile,
      O                       sumPhi,
      I                       myThid )
 
 C     !DESCRIPTION:
 C     *==========================================================*
-C     | SUBROUTINE GLOBAL\_SUM\_TILE\_MERID
+C     | SUBROUTINE GLOBAL\_SUM\_TILE\_ZONAL
 C     | o Handle sum for _RL data.
 C     *==========================================================*
 C     | Apply sum on an array of one value per tile
@@ -30,7 +30,7 @@ C     |  over a column (meridional) of tiles. Each entry
 C     |  represents the sum for each column of tiles. The total
 C     |  number of entries is given by nSx*nPx.
 C     |  
-C     |  nSx*Npx must be less than 31! (lshare8 - 1)
+C     |  
 C     | 
 C     |  My CPP_EEOPTIONS.h file shows:
 C     |    #define GLOBAL_SUM_ORDER_TILES
@@ -54,8 +54,8 @@ C     == Routine arguments ==
 C     phiTile :: Input array with one value per tile
 C     sumPhi  :: Result of sum.
 C     myThid  :: My thread id.
-      _RL     phiTile(nSx,nSy)
-      _RL     sumPhi(lshare8)
+      _RL     phiTile(sNy,nSx,nSy)        ! hassan: modified
+      _RL     sumPhi(lshare8, sNy, nPy)   ! hassan: modified
       INTEGER myThid
 
 C     !LOCAL VARIABLES:
@@ -70,19 +70,19 @@ C         all 4 needs to have the same length as MPI_DOUBLE_PRECISION
       INTEGER biG, bjG, np, pId
       INTEGER lbuff, idest, itag, ready_to_receive
       INTEGER istatus(MPI_STATUS_SIZE), ierr
-      Real*8  localBuf (nSx,nSy)
+      Real*8  localBuf (nSx,nSy)        
       Real*8  globalBuf(nSx*nPx,nSy*nPy)
 #elif defined (GLOBAL_SUM_ORDER_TILES)
       INTEGER biG, bjG, lbuff
-      Real*8  localBuf (nSx*nPx,nSy*nPy)
-      Real*8  globalBuf(nSx*nPx,nSy*nPy)
+      Real*8  localBuf (1-OLy:sNy+OLy,nSx*nPx,nSy*nPy) ! hassan: modified
+      Real*8  globalBuf(1-OLy:sNy+OLy,nSx*nPx,nSy*nPy) ! hassan: modified
 #endif
       INTEGER mpiRC
 #endif /* ALLOW_USE_MPI */
       Real*8  sumMyPr
       Real*8  sumAllP
 C     hassan: the new variable that will be returned
-      Real*8  sumAllVec(nPx*nSx)
+      Real*8  sumAllVec(1-OLy:sNy+OLy,nPy*nSy)
       INTEGER indexx
 CEOP
 
@@ -92,7 +92,9 @@ c     CALL BAR2( myThid )
 C--   write local sum into shared-buffer array
       DO bj = myByLo(myThid), myByHi(myThid)
        DO bi = myBxLo(myThid), myBxHi(myThid)
-         shareBufGSR8(bi,bj) = phiTile(bi,bj)
+        DO j = jMin, jMax
+         shareBufvGSR8(j,bi,bj) = phiTile(j,bi,bj)
+        ENDDO
        ENDDO
       ENDDO
 
@@ -179,38 +181,46 @@ C       End if/else mpiMyId = 0
 #elif (defined (GLOBAL_SUM_ORDER_TILES) && defined (ALLOW_USE_MPI) )
       IF ( usingMPI ) THEN
 
-C--   Initialise local buffer
+C--   Initialise local buffer; hassan: modified
         DO bjG=1,nSy*nPy
          DO biG=1,nSx*nPx
-           localBuf(biG,bjG) = 0.
+          DO j=jMin,jMax
+           localBuf(j,biG,bjG) = 0.
+          ENDDO
          ENDDO
         ENDDO
 
-C--   Put my own data in local buffer
+C--   Put my own data in local buffer; hassan: modified
         DO bj=1,nSy
          DO bi=1,nSx
-           biG = (myXGlobalLo-1)/sNx+bi
-           bjG = (myYGlobalLo-1)/sNy+bj
-           localBuf(biG,bjG) = shareBufGSR8(bi,bj)
+          biG = (myXGlobalLo-1)/sNx+bi
+          bjG = (myYGlobalLo-1)/sNy+bj
+          DO j=jMin,jMax 
+           localBuf(j,biG,bjG) = shareBufvGSR8(j,bi,bj)
+          ENDDO
          ENDDO
         ENDDO
 
 C--   Collect data from all procs
-        lbuff = nSx*nPx*nSy*nPy
+        lbuff = sNy*nSx*nPx*nSy*nPy ! hassan: modified
         CALL MPI_Allreduce( localBuf, globalBuf, lbuff,
      &           MPI_DOUBLE_PRECISION, MPI_SUM, MPI_COMM_MODEL, mpiRC )
 
-C-    hassan: modified to sum over tiles in the same column
-C-            luckily, the biG,bjG are based on the tile spatial location
+C-    hassan: modified to sum over tiles in the same row
+C-            The biG,bjG are based on the tile spatial location
 C-            within the simulation!
-C--   Sum over each column:
-         DO biG = 1,nSx*nPx
-          sumAllVec(biG) = 0.
+C--   Set to 0 then sum over each column:
+         DO bjG = 1,nSy*nPy
+          DO j=jMin,jMax
+           sumAllVec(j,bjG) = 0.
+          ENDDO
          ENDDO
 
-         DO biG = 1,nSx*nPx
-          DO bjG = 1,nSy*nPy
-           sumAllVec(biG) = sumAllVec(biG) + globalBuf(biG,bjG)
+         DO bjG = 1,nSy*nPy
+          DO biG = 1,nSx*nPx
+           DO j = jMin,jMax
+            sumAllVec(j,bjG) = sumAllVec(j,bjG) + globalBuf(j,biG,bjG)
+           ENDDO
           ENDDO
          ENDDO
 
@@ -239,21 +249,17 @@ C     in case MPI is not used:
 
       ENDIF
       
-C-    hassan: This code block must also be changed.
-C-            The vector sumAllVec holds max 32 values. It is passed to the
-C-            preexisting array phiGSR8 which has size (lshare8,MAX_NO_THREADS).
-C             lshare8 is 32, and the first slot is used by other subroutines,
-C             so we limit ourselves to the following 31 slots. It may be
-C             possible to use a larger shared array like phivGSR8, but then
-C             the localBuf and globalBuf arrays would have to grow as well.
-C             If performance is terrible (too large sNx?) then I suggest
-C             using the larger shared array to reduce the # of MPI calls. Of
-C             course, this isn't easy because if it were I'd have done it.
+C-    hassan: At first, the following seems oddly redundant. But it's
+C             necessary because of the preexisting comment further below.
+C             See GLOBAL_SUM.h
+
 C-             
 C--   Write solution to shared buffer (all threads can see it)
 c     shareBufGSR8(1,1) = sumAllP
-      DO indexx = 1,nSx*nPx
-        phiGSR8(indexx+1,0) = sumAllVec(indexx)
+      DO indexx = 1,nSy*nPy
+       DO j=jMin,jMax
+        phivGSR8(1,0,j,indexx) = sumAllVec(j,indexx) ! hassan: modified
+       ENDDO
       ENDDO
 
       _END_MASTER( myThid )
@@ -262,8 +268,10 @@ C--   Everyone wait for Master thread to be ready
 
 C--   set result for every threads
 c     sumPhi = shareBufGSR8(1,1)
-      DO indexx = 1,nSx*nPx
-        sumPhi(indexx) = phiGSR8(indexx+1,0)
+      DO indexx = 1,nSy*nPy
+       DO j=jMin,jMax
+        sumPhi(1,j,indexx) = phivGSR8(1,0,j,indexx)
+       ENDDO
       ENDDO
 C--   A barrier was needed here to prevent thread 1 to modify shareBufGSR8(1,1)
 C     (as it would in the following call to this S/R) before all threads get

@@ -65,11 +65,15 @@ C     hassan: helper variables to compute average
       INTEGER ks
       INTEGER valCol ! hassan: index for this thread's column of tiles
       _RL recip_Cp
-      _RL sum_T(lshare8), sum_S(lshare8) 
-      _RL sum_U(lshare8), sum_V(lshare8) ! hassan: helper variables
-      _RL meridArea
-      _RL T_tile(nSx,nSy), S_tile(nSx,nSy) ! hassan: more helper arrays
-      _RL U_tile(nSx,nSy), V_tile(nSx,nSy) ! hassan
+      _RL sum_T(lshare8,1-OLy:sNy+OLy,nPy*nSy) ! hassan
+      _RL sum_S(lshare8,1-OLy:sNy+OLy,nPy*nSy) ! hassan
+      _RL sum_U(lshare8,1-OLy:sNy+OLy,nPy*nSy) ! hassan
+      _RL sum_V(lshare8,1-OLy:sNy+OLy,nPy*nSy) ! hassan: helper variables
+      _RL meridArea           ! hassan
+      _RL T_tile(1-OLy:sNy+OLy,nSx,nSy) ! hassan
+      _RL S_tile(1-OLy:sNy+OLy,nSx,nSy) ! hassan: more helper arrays
+      _RL U_tile(1-OLy:sNy+OLy,nSx,nSy) ! hassan
+      _RL V_tile(1-OLy:sNy+OLy,nSx,nSy) ! hassan
 #ifdef ALLOW_BALANCE_FLUXES
       _RS tmpVar(1)
 #endif
@@ -85,51 +89,58 @@ CEOP
       ENDIF
       recip_Cp = 1. _d 0 / HeatCapacity_Cp
 
-C hassan: calculate mean_T, mean_S, mean_U, mean_V (meridional average of theta,
-C s, u, and v) GLOBAL_SUM_TILE_MERID returns nPx*nSx values, and each thread
-C only needs to know one of the values. This MPI function must be called once
-C for each horizontal grid cell in a tile. Inefficient, but maybe not too bad?
+C hassan: calculate mean_T, mean_S, mean_U, mean_V (zonal average of theta,
+C s, u, and v) GLOBAL_SUM_TILE_ZONAL
 
       DO k=1,Nr
-        sum_T = 0.
-        sum_S = 0.
-        sum_U = 0.
-        sum_V = 0.
+        meridArea = 0.
+        DO bjG=1,nPy*nSy
+          DO j=jMin,jMax
+            DO lsrDex=1,lshare8
+              sum_T(lsrDex,j,bjG) = 0.
+              sum_S(lsrDex,j,bjG) = 0.
+              sum_U(lsrDex,j,bjG) = 0.
+              sum_V(lsrDex,j,bjG) = 0.
+            ENDDO
+          ENDDO
+        ENDDO
         DO bj=myByLo(myThid), myByHi(myThid)
           DO bi=myBxLo(myThid), myBxHi(myThid)
-            DO i=iMin,iMax
-              T_tile(bi,bj) = 0.
-              S_tile(bi,bj) = 0.
-              U_tile(bi,bj) = 0.
-              V_tile(bi,bj) = 0.
-              meridArea = 0.
-              DO j=jMin,jMax
+            DO j=jMin,jMax
+              T_tile(j,bi,bj) = 0.
+              S_tile(j,bi,bj) = 0.
+              U_tile(j,bi,bj) = 0.
+              V_tile(j,bi,bj) = 0.
+            ENDDO
+            DO j=jMin,jMax
+              DO i=iMin,iMax
 C               hassan: modified to mean over only meridional slices
-                T_tile(bi,bj) = T_tile(bi,bj)
+                T_tile(j,bi,bj) = T_tile(j,bi,bj)
      &            + rA(i,j,bi,bj)*theta(i,j,k,bi,bj)
-                S_tile(bi,bj) = S_tile(bi,bj)
+                S_tile(j,bi,bj) = S_tile(j,bi,bj)
      &            + rA(i,j,bi,bj)*salt(i,j,k,bi,bj)
-C               JC: The following is probably not right for uneven grids.
-                U_tile(bi,bj) = U_tile(bi,bj)
+                U_tile(j,bi,bj) = U_tile(j,bi,bj)
      &            + rA(i,j,bi,bj)*uVel(i,j,k,bi,bj)
-                V_tile(bi,bj) = V_tile(bi,bj)
+                V_tile(j,bi,bj) = V_tile(j,bi,bj)
      &            + rA(i,j,bi,bj)*vVel(i,j,k,bi,bj)
                 meridArea = meridArea + rA(i,j,bi,bj)
               ENDDO
-              T_tile(bi,bj) = T_tile(bi,bj) / meridArea
-              S_tile(bi,bj) = S_tile(bi,bj) / meridArea
-              U_tile(bi,bj) = U_tile(bi,bj) / meridArea
-              V_tile(bi,bj) = V_tile(bi,bj) / meridArea
-              CALL GLOBAL_SUM_TILE_MERID(T_tile, sum_T, myThid)
-              CALL GLOBAL_SUM_TILE_MERID(S_tile, sum_S, myThid)
-              CALL GLOBAL_SUM_TILE_MERID(U_tile, sum_U, myThid)
-              CALL GLOBAL_SUM_TILE_MERID(V_tile, sum_V, myThid)
-              valCol = (myXGlobalLo-1)/sNx + bi
-              mean_T(i,k,bi,bj) = sum_T(valCol) / (nPy*nSy) ! divided by # of tiles
-              mean_S(i,k,bi,bj) = sum_S(valCol) / (nPy*nSy) ! divided by # of tiles
-              mean_U(i,k,bi,bj) = sum_U(valCol) / (nPy*nSy) ! divided by # of tiles
-              mean_V(i,k,bi,bj) = sum_V(valCol) / (nPy*nSy) ! divided by # of tiles
-              _BARRIER
+              T_tile(j,bi,bj) = T_tile(j,bi,bj) / meridArea
+              S_tile(j,bi,bj) = S_tile(j,bi,bj) / meridArea
+              U_tile(j,bi,bj) = U_tile(j,bi,bj) / meridArea
+              V_tile(j,bi,bj) = V_tile(j,bi,bj) / meridArea
+              meridArea = 0.
+            ENDDO
+            CALL GLOBAL_SUM_TILE_ZONAL(T_tile, sum_T, myThid)
+            CALL GLOBAL_SUM_TILE_ZONAL(S_tile, sum_S, myThid)
+            CALL GLOBAL_SUM_TILE_ZONAL(U_tile, sum_U, myThid)
+            CALL GLOBAL_SUM_TILE_ZONAL(V_tile, sum_V, myThid)
+            valCol = (myYGlobalLo-1)/sNy + bj
+            DO j=jMin,jMax
+              mean_T(j,k,bi,bj) = sum_T(1,j,valCol) / (nPy*nSy) ! divided by # of tiles
+              mean_S(j,k,bi,bj) = sum_S(1,j,valCol) / (nPy*nSy) ! divided by # of tiles
+              mean_U(j,k,bi,bj) = sum_U(1,j,valCol) / (nPy*nSy) ! divided by # of tiles
+              mean_V(j,k,bi,bj) = sum_V(1,j,valCol) / (nPy*nSy) ! divided by # of tiles
             ENDDO
           ENDDO
         ENDDO

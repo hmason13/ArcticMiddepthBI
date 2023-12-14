@@ -74,7 +74,7 @@ CEOP
          DO i=0,sNx+1
           gTendency(i,j) = gTendency(i,j)
      &       - RBC_maskU(i,j,k,bi,bj)*rec_tauRlx
-     &        *( mean_U(i,k,bi,bj)- RBCuVel(i,j,k,bi,bj) )
+     &        *( mean_U(j,k,bi,bj)- RBCuVel(i,j,k,bi,bj) )
          ENDDO
         ENDDO
       ENDIF
@@ -84,7 +84,7 @@ CEOP
          DO i=0,sNx+1
           gTendency(i,j) = gTendency(i,j)
      &       - RBC_maskV(i,j,k,bi,bj)*rec_tauRlx
-     &        *( mean_V(i,k,bi,bj)- RBCvVel(i,j,k,bi,bj) )
+     &        *( mean_V(j,k,bi,bj)- RBCvVel(i,j,k,bi,bj) )
          ENDDO
         ENDDO
       ENDIF
@@ -97,7 +97,7 @@ CEOP
          DO i=0,sNx+1
           gTendency(i,j) = gTendency(i,j)
      &       - RBC_mask(i,j,k,bi,bj,irbc)*rec_tauRlx
-     &        *( mean_T(i,k,bi,bj)- RBCtemp(i,j,k,bi,bj) )
+     &        *( mean_T(j,k,bi,bj)- RBCtemp(i,j,k,bi,bj) )
 
          ENDDO
         ENDDO
@@ -110,7 +110,7 @@ CEOP
          DO i=0,sNx+1
           gTendency(i,j) = gTendency(i,j)
      &       - RBC_mask(i,j,k,bi,bj,irbc)*rec_tauRlx
-     &        *( mean_S(i,k,bi,bj)- RBCsalt(i,j,k,bi,bj) )
+     &        *( mean_S(j,k,bi,bj)- RBCsalt(i,j,k,bi,bj) )
          ENDDO
         ENDDO
       ENDIF
