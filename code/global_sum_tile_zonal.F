@@ -54,8 +54,8 @@ C     == Routine arguments ==
 C     phiTile :: Input array with one value per tile
 C     sumPhi  :: Result of sum.
 C     myThid  :: My thread id.
-      _RL     phiTile(sNy,nSx,nSy)        ! hassan: modified
-      _RL     sumPhi(lshare8, sNy, nPy)   ! hassan: modified
+      _RL     phiTile(1-OLy:sNy+OLy,nSx,nSy)        ! hassan: modified
+      _RL     sumPhi(lshare8, 1-OLy:sNy+OLy, nSy*nPy)   ! hassan: modified
       INTEGER myThid
 
 C     !LOCAL VARIABLES:
@@ -64,7 +64,7 @@ C     bi,bj   :: Loop counters
 C     mpiRC   :: MPI return code
 C- type declaration of: sumMyPr, sumAllP, localBuf and shareBufGSR8 :
 C         all 4 needs to have the same length as MPI_DOUBLE_PRECISION
-      INTEGER bi,bj
+      INTEGER bi,bj,j
 #ifdef ALLOW_USE_MPI
 #ifdef GLOBAL_SUM_SEND_RECV
       INTEGER biG, bjG, np, pId
@@ -83,7 +83,6 @@ C         all 4 needs to have the same length as MPI_DOUBLE_PRECISION
       Real*8  sumAllP
 C     hassan: the new variable that will be returned
       Real*8  sumAllVec(1-OLy:sNy+OLy,nPy*nSy)
-      INTEGER indexx
 CEOP
 
 C     this barrier is not necessary:
@@ -92,7 +91,7 @@ c     CALL BAR2( myThid )
 C--   write local sum into shared-buffer array
       DO bj = myByLo(myThid), myByHi(myThid)
        DO bi = myBxLo(myThid), myBxHi(myThid)
-        DO j = jMin, jMax
+        DO j = 1-OLy,sNy+OLy
          shareBufvGSR8(j,bi,bj) = phiTile(j,bi,bj)
         ENDDO
        ENDDO
@@ -184,7 +183,7 @@ C       End if/else mpiMyId = 0
 C--   Initialise local buffer; hassan: modified
         DO bjG=1,nSy*nPy
          DO biG=1,nSx*nPx
-          DO j=jMin,jMax
+          DO j=1-OLy,sNy+OLy
            localBuf(j,biG,bjG) = 0.
           ENDDO
          ENDDO
@@ -195,30 +194,30 @@ C--   Put my own data in local buffer; hassan: modified
          DO bi=1,nSx
           biG = (myXGlobalLo-1)/sNx+bi
           bjG = (myYGlobalLo-1)/sNy+bj
-          DO j=jMin,jMax 
+          DO j=1-OLy,sNy+OLy
            localBuf(j,biG,bjG) = shareBufvGSR8(j,bi,bj)
           ENDDO
          ENDDO
         ENDDO
 
 C--   Collect data from all procs
-        lbuff = sNy*nSx*nPx*nSy*nPy ! hassan: modified
+        lbuff = (sNy+OLy+OLy)*nSx*nPx*nSy*nPy ! hassan: modified
         CALL MPI_Allreduce( localBuf, globalBuf, lbuff,
      &           MPI_DOUBLE_PRECISION, MPI_SUM, MPI_COMM_MODEL, mpiRC )
 
 C-    hassan: modified to sum over tiles in the same row
 C-            The biG,bjG are based on the tile spatial location
 C-            within the simulation!
-C--   Set to 0 then sum over each column:
+C--   Set to 0 then sum over each row:
          DO bjG = 1,nSy*nPy
-          DO j=jMin,jMax
+          DO j=1-OLy,sNy+OLy
            sumAllVec(j,bjG) = 0.
           ENDDO
          ENDDO
 
          DO bjG = 1,nSy*nPy
           DO biG = 1,nSx*nPx
-           DO j = jMin,jMax
+           DO j = 1-OLy,sNy+OLy
             sumAllVec(j,bjG) = sumAllVec(j,bjG) + globalBuf(j,biG,bjG)
            ENDDO
           ENDDO
@@ -249,16 +248,13 @@ C     in case MPI is not used:
 
       ENDIF
       
-C-    hassan: At first, the following seems oddly redundant. But it's
-C             necessary because of the preexisting comment further below.
-C             See GLOBAL_SUM.h
 
 C-             
 C--   Write solution to shared buffer (all threads can see it)
 c     shareBufGSR8(1,1) = sumAllP
-      DO indexx = 1,nSy*nPy
-       DO j=jMin,jMax
-        phivGSR8(1,0,j,indexx) = sumAllVec(j,indexx) ! hassan: modified
+      DO bjG = 1,nSy*nPy
+       DO j=1-OLy,sNy+OLy
+        phivGSR8(1,0,j,bjG) = sumAllVec(j,bjG) ! hassan: modified
        ENDDO
       ENDDO
 
@@ -268,9 +264,9 @@ C--   Everyone wait for Master thread to be ready
 
 C--   set result for every threads
 c     sumPhi = shareBufGSR8(1,1)
-      DO indexx = 1,nSy*nPy
-       DO j=jMin,jMax
-        sumPhi(1,j,indexx) = phivGSR8(1,0,j,indexx)
+      DO bjG = 1,nSy*nPy
+       DO j=1-OLy,sNy+OLy
+        sumPhi(1,j,bjG) = phivGSR8(1,0,j,bjG)
        ENDDO
       ENDDO
 C--   A barrier was needed here to prevent thread 1 to modify shareBufGSR8(1,1)

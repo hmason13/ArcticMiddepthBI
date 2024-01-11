@@ -1,7 +1,10 @@
  &KPP_PARM01
 
- kpp_freq=1e4,
- kpp_dumpFreq=5e5,
+# default deltaTclock
+# kpp_freq=,
+
+# default dumpFreq
+# kpp_dumpFreq=,
 
  KPPwriteState   = .TRUE.,
  KPP_ghatUseTotalDiffus=.FALSE.,

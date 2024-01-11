@@ -7,8 +7,8 @@ import scipy.integrate as teg
 import sys
 
 # grid constants
-nx = 250
-ny = 300
+nx = 500
+ny = 500
 nz = 50
 dx = 2000 # cell size in meters
 dy = 2000
@@ -137,31 +137,40 @@ nSquare       = terp.splev(zCenters,nSquareSpline)
 
 # generate bump function for density field
 # the conservative choice
-def myBumpSech(x):
-    center = nx / 2 # unit is grid cells
+def myBumpSech(y):
+    center = ny / 2 # unit is grid cells
     width  = .4    # nonDim parameter
-    return np.cosh((x-center) / (center*width))**(-2) # unit is grid cells
+    return np.cosh((y-center) / (center*width))**(-2) # unit is grid cells
 
 # the aggressive choice
-def myBumpExp(x):
-    center = nx / 2
-    safety  = 1.01
+def myBumpExp(y):
+    center = ny / 2
+    width  = 0.6
     deg    = 2
-    
-    val = np.abs((x-center)/(center*safety))
+
+    val = np.abs((y-center)/(center*width))
+
+    # I apologize for this block
+    # it's necessary(?) for np.fromfunc
+    try:
+        val[val>=1] = 1-1e-4
+    except:
+        if val >= 1:
+            val = 1-1e-4
+
     val = val**deg
     return np.exp(1-(1/(1-val)))
 
 # make your choice .......................... here
-funcPrime = np.fromfunction(lambda z,y,x: myBumpExp(x), shape=(nz,ny,nx))
+funcPrime = np.fromfunction(lambda z,y,x: myBumpExp(y), shape=(nz,ny,nx))
 
 
 # integrate bump function for density field
-func  = teg.cumulative_trapezoid(funcPrime[0,0,:],
-                                np.linspace(0,nx-1,nx),
+func  = teg.cumulative_trapezoid(funcPrime[0,:,0],
+                                np.linspace(0,ny-1,ny),
                                 initial=0)
-func *= dx                                           # input: grid cells
-func -= (func[int(nx/2)]+func[1+int(nx/2)])/2        # output: meters
+func *= dy                                           # input: grid cells
+func -= (func[int(ny/2)]+func[1+int(ny/2)])/2        # output: meters
 
 
 # determine horizontal gradient of choice
@@ -171,20 +180,19 @@ horizDGHalfs = np.sqrt(zonalDGHalfs**2 + meridDGHalfs**2)
 
 # generate density field
 rho = np.ones((nz,ny,nx))*(rhoProfile[:,np.newaxis,np.newaxis]
-       +(horizDG[:,np.newaxis,np.newaxis]*func[np.newaxis,np.newaxis,:]))
+       +(horizDG[:,np.newaxis,np.newaxis]*func[np.newaxis,:,np.newaxis]))
 
-# save u:
-u = np.zeros((nz,ny,nx))
-u.astype('>f4').tofile('u-2km.bin')
+# save v:
+v = np.zeros((nz,ny,nx))
+v.astype('>f4').tofile('v-2km.bin')
 
 
-# generate v from thermal wind balance: 0m/s at domain floor
-vertiShear = -horizDGHalfs[:,np.newaxis,np.newaxis]*funcPrime[:-1,:,:]*g/rhoConst/f0 
+# generate u from thermal wind balance: 0m/s at domain floor
+vertiShear = horizDGHalfs[:,np.newaxis,np.newaxis]*funcPrime[:-1,:,:]*g/rhoConst/f0 
 velocities = np.zeros(shape=(nz,ny,nx))
 for i in range(49,0,-1):
     velocities[i-1,:,:] = velocities[i,:,:] + vertiShear[i-1,:,:]*zDelta[i-1]
-velocities.astype('>f4').tofile('v-2km.bin')
-
+velocities.astype('>f4').tofile('u-2km.bin')
 
 # generate salinity field
 salt = rho / rhoConst
@@ -193,7 +201,7 @@ salt = salt + s0
 salt.astype('>f4').tofile('salt-2km.bin')
 
 # generate perturbed salt field
-pSalt = salt + np.fromfunction(lambda z,y,x: 1e-4*np.sin(y/10), (nz,ny,nx))
+pSalt = salt + np.fromfunction(lambda z,y,x: 1e-4*np.sin(x/10), (nz,ny,nx))
 pSalt.astype('>f4').tofile('perturbedSalt-2km.bin')
 
 # generate temp (not evolved in model)
@@ -208,7 +216,7 @@ eta.astype('>f4').tofile('eta-2km.bin')
 
 # generate bathymetry
 bathy = -1*np.ones((ny,nx))*dz.sum()
-bathy[:,-1] = 0       # wall
+bathy[-1,:] = 0       # wall
 bathy.astype('>f4').tofile('bathy-2km.bin')
 
 # generate restoring mask

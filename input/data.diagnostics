@@ -23,23 +23,28 @@
 
   fields(1:9,5)  = 'SIarea','SIheff','SIuice','SIvice','sIceLoad','ADVxHEFF','ADVyHEFF','SIuheff','SIvheff',
   fileName(5) = 'diagsIceGeneral',
-  frequency(5) =  43200.,
+  frequency(5) =  5184000.,
+# frequency(5) = .,
 
   fields(1:2,4)  = 'SIfu','SIfv',
   fileName(4) = 'diagsIceForce',
-  frequency(4) =  43200.,
+  frequency(4) =  5184000.,
+# frequency(4) = .,
 
   fields(1:4,1) = 'momKE','momVort3','Um_Ext','Vm_Ext',
   fileName(1) = 'diagsDynamics',
-  frequency(1) = 43200.,
+  frequency(1) = 5184000.,
+# frequency(1) = .,
 
-  fields(1:7,2) = 'WVELSLT','WVELTH','ADVr_TH','ADVr_SLT','WRHOMASS','URHOMASS','VRHOMASS',
+  fields(1:5,2) = 'WVELSLT','ADVr_SLT','WRHOMASS','URHOMASS','VRHOMASS',
   fileName(2) = 'diagsFluxes',
-  frequency(2) = 43200.,
+  frequency(2) = 5184000.,
+# frequency(2) = .,
 
   fields(1:2,3) = 'RHOAnoma','DRHODR',
   fileName(3) = 'diagsState',
-  frequency(3) = 43200.,
+  frequency(3) = 5184000.,
+# frequency(3) = .,
 
  &
  &DIAG_STATIS_PARMS

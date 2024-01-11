@@ -62,14 +62,14 @@ C     ks     :: index of surface interface layer
 C     hassan: helper variables to compute average
       INTEGER bi,bj
       INTEGER i,j,k
-      INTEGER ks
+      INTEGER ks,bjG,lsrDex
       INTEGER valCol ! hassan: index for this thread's column of tiles
       _RL recip_Cp
       _RL sum_T(lshare8,1-OLy:sNy+OLy,nPy*nSy) ! hassan
       _RL sum_S(lshare8,1-OLy:sNy+OLy,nPy*nSy) ! hassan
       _RL sum_U(lshare8,1-OLy:sNy+OLy,nPy*nSy) ! hassan
       _RL sum_V(lshare8,1-OLy:sNy+OLy,nPy*nSy) ! hassan: helper variables
-      _RL meridArea           ! hassan
+      _RL zonalArea           ! hassan
       _RL T_tile(1-OLy:sNy+OLy,nSx,nSy) ! hassan
       _RL S_tile(1-OLy:sNy+OLy,nSx,nSy) ! hassan: more helper arrays
       _RL U_tile(1-OLy:sNy+OLy,nSx,nSy) ! hassan
@@ -91,19 +91,10 @@ CEOP
 
 C hassan: calculate mean_T, mean_S, mean_U, mean_V (zonal average of theta,
 C s, u, and v) GLOBAL_SUM_TILE_ZONAL
+C hassan: This may not work if bi,bj != 1 
 
       DO k=1,Nr
-        meridArea = 0.
-        DO bjG=1,nPy*nSy
-          DO j=jMin,jMax
-            DO lsrDex=1,lshare8
-              sum_T(lsrDex,j,bjG) = 0.
-              sum_S(lsrDex,j,bjG) = 0.
-              sum_U(lsrDex,j,bjG) = 0.
-              sum_V(lsrDex,j,bjG) = 0.
-            ENDDO
-          ENDDO
-        ENDDO
+        zonalArea = 0.
         DO bj=myByLo(myThid), myByHi(myThid)
           DO bi=myBxLo(myThid), myBxHi(myThid)
             DO j=jMin,jMax
@@ -113,8 +104,8 @@ C s, u, and v) GLOBAL_SUM_TILE_ZONAL
               V_tile(j,bi,bj) = 0.
             ENDDO
             DO j=jMin,jMax
-              DO i=iMin,iMax
-C               hassan: modified to mean over only meridional slices
+              DO i=1,sNx
+C               hassan: modified to mean over only zonal slices
                 T_tile(j,bi,bj) = T_tile(j,bi,bj)
      &            + rA(i,j,bi,bj)*theta(i,j,k,bi,bj)
                 S_tile(j,bi,bj) = S_tile(j,bi,bj)
@@ -123,24 +114,28 @@ C               hassan: modified to mean over only meridional slices
      &            + rA(i,j,bi,bj)*uVel(i,j,k,bi,bj)
                 V_tile(j,bi,bj) = V_tile(j,bi,bj)
      &            + rA(i,j,bi,bj)*vVel(i,j,k,bi,bj)
-                meridArea = meridArea + rA(i,j,bi,bj)
+                zonalArea = zonalArea + rA(i,j,bi,bj)
               ENDDO
-              T_tile(j,bi,bj) = T_tile(j,bi,bj) / meridArea
-              S_tile(j,bi,bj) = S_tile(j,bi,bj) / meridArea
-              U_tile(j,bi,bj) = U_tile(j,bi,bj) / meridArea
-              V_tile(j,bi,bj) = V_tile(j,bi,bj) / meridArea
-              meridArea = 0.
+              T_tile(j,bi,bj) = T_tile(j,bi,bj) / zonalArea
+              S_tile(j,bi,bj) = S_tile(j,bi,bj) / zonalArea
+              U_tile(j,bi,bj) = U_tile(j,bi,bj) / zonalArea
+              V_tile(j,bi,bj) = V_tile(j,bi,bj) / zonalArea
+              zonalArea = 0.
             ENDDO
-            CALL GLOBAL_SUM_TILE_ZONAL(T_tile, sum_T, myThid)
-            CALL GLOBAL_SUM_TILE_ZONAL(S_tile, sum_S, myThid)
-            CALL GLOBAL_SUM_TILE_ZONAL(U_tile, sum_U, myThid)
-            CALL GLOBAL_SUM_TILE_ZONAL(V_tile, sum_V, myThid)
-            valCol = (myYGlobalLo-1)/sNy + bj
+          ENDDO
+        ENDDO
+        CALL GLOBAL_SUM_TILE_ZONAL(T_tile, sum_T, myThid)
+        CALL GLOBAL_SUM_TILE_ZONAL(S_tile, sum_S, myThid)
+        CALL GLOBAL_SUM_TILE_ZONAL(U_tile, sum_U, myThid)
+        CALL GLOBAL_SUM_TILE_ZONAL(V_tile, sum_V, myThid)
+        DO bj=myByLo(myThid), myByHi(myThid)
+          valCol = (myYGlobalLo-1)/sNy + bj
+          DO bi=myBxLo(myThid), myByHi(myThid)
             DO j=jMin,jMax
-              mean_T(j,k,bi,bj) = sum_T(1,j,valCol) / (nPy*nSy) ! divided by # of tiles
-              mean_S(j,k,bi,bj) = sum_S(1,j,valCol) / (nPy*nSy) ! divided by # of tiles
-              mean_U(j,k,bi,bj) = sum_U(1,j,valCol) / (nPy*nSy) ! divided by # of tiles
-              mean_V(j,k,bi,bj) = sum_V(1,j,valCol) / (nPy*nSy) ! divided by # of tiles
+              mean_T(j,k,bi,bj) = sum_T(1,j,valCol) / (nPx*nSx) ! divided by # of tiles
+              mean_S(j,k,bi,bj) = sum_S(1,j,valCol) / (nPx*nSx) ! divided by # of tiles
+              mean_U(j,k,bi,bj) = sum_U(1,j,valCol) / (nPx*nSx) ! divided by # of tiles
+              mean_V(j,k,bi,bj) = sum_V(1,j,valCol) / (nPx*nSx) ! divided by # of tiles
             ENDDO
           ENDDO
         ENDDO

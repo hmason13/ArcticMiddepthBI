@@ -63,26 +63,27 @@
  &
 
 
-# timestepping parameters
  &PARM03
+# timestepping parameters for spinup
  deltaT=400.0,
  nIter0=0,
  nTimeSteps=788400,
- taveFreq=1036800.,
- dumpFreq=1036800.,
- monitorFreq=172800.,
-
-# timestepping parameters for pickup
-# deltaT=200.0,
-# nIter0=388800,
-# nTimeSteps=388800,
-# taveFreq=604800.,
-# dumpFreq=129600.,
-# monitorFreq=518400.,
-
+ taveFreq=5184000.,
+ dumpFreq=5184000.,
+ monitorFreq=432000.,
+ chkPtFreq=31968000.,
  writePickupAtEnd=.TRUE.,
  tracForcingOutAB=1,
- pickupStrictlyMatch=.FALSE.,
+
+# timestepping parameters for pickup
+# deltaT=400.0,
+# nIter0=,
+# nTimeSteps=,
+# taveFreq=., 
+# dumpFreq=.,
+# monitorFreq=.,
+# tracForcingOutAB=1,
+# pickupStrictlyMatch=.FALSE.,
 
 # tauThetaClimRelax=518400,
  &

@@ -39,6 +39,8 @@ C     nPy :: No. of processes to use in Y.
 C     Nx  :: No. points in X for the total domain.
 C     Ny  :: No. points in Y for the total domain.
 C     Nr  :: No. points in Z for full process domain.
+C     nTx :: Number of tiles in X ! hassan
+C     nTy :: Number of tiles in Y ! hassan
       INTEGER sNx
       INTEGER sNy
       INTEGER OLx
@@ -50,6 +52,8 @@ C     Nr  :: No. points in Z for full process domain.
       INTEGER Nx
       INTEGER Ny
       INTEGER Nr
+      INTEGER nTilesX
+      INTEGER nTilesY
       PARAMETER (
      &           sNx = 25,
      &           sNy = 25,
@@ -61,7 +65,9 @@ C     Nr  :: No. points in Z for full process domain.
      &           nPy =   20,
      &           Nx  = sNx*nSx*nPx,
      &           Ny  = sNy*nSy*nPy,
-     &           Nr  =  50)
+     &           Nr  =  50,
+     &           nTilesX = nSx*nPx,
+     &           nTilesY = nSy*nPy)
 
 C     MAX_OLX :: Set to the maximum overlap region size of any array
 C     MAX_OLY    that will be exchanged. Controls the sizing of exch
