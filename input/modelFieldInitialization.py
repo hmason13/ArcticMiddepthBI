@@ -64,7 +64,7 @@ dataArray2.fill_value=np.nan
 
 # time average
 dataDensities = dataArray1.mean(0)
-dataNSquares = dataArray2.mean(0) * g / rhoConst
+dataNSquares = -dataArray2.mean(0) * g / rhoConst
 
 # generate hydrostatic pressure field
 pressure = np.zeros((nz+dVI,latRange,lonRange))
@@ -230,4 +230,24 @@ heff = area * 2 # effective thickness, (ice doesn't melt or grow!)
 area.astype('>f4').tofile("iceArea2km.bin")
 heff.astype('>f4').tofile("iceHeff2km.bin")
 
+# save some fields for figure generation
+loc4 = "/home/hcm7920/experiments/arcticMiddepthBI/analysis/"
+np.save(loc4+"figData/modelVelU.npy",velocities)
+np.save(loc4+"figData/modelRhoProfile.npy",rhoProfile)
+np.save(loc4+"figData/modelRho.npy",rho)
+np.save(loc4+"figData/modelNSquare.npy",nSquare)
+np.save(loc4+"figData/modelDepth.npy",zCenters)
+np.save(loc4+"figData/modelHorizDG.npy",horizDG)
 
+# store arrays for future use
+locS = "/home/hcm7920/experiments/arcticMiddepthBI/data/linStabData/"
+saveDict = {}
+saveDict["depth"] = zCenters
+saveDict["rho"]   = rhoProfile
+saveDict["uVel"]  = velocities[:, ny//2, nx//2]
+saveDict["vVel"]  = velocities[:, ny//2, nx//2]*0.0
+saveDict["bigF"]  = (f0**2) * rhoConst / g
+saveDict["beta"]  = 0.0
+saveDict["betaT"] = 0.0
+scipy.io.savemat(locS+"modelProfilesForQgLinStab",saveDict)
+del saveDict
