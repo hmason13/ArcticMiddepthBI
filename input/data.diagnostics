@@ -48,7 +48,7 @@
 
   fields(1:4,6) = 'PHIHYD','PHIHYDSQ','momVort3','RHOAnoma',
   fileName(6) = 'diagsSnapshots',
-  frequency(6) = -86400.,
+  frequency(6) = -432000.,
 
   fields(1:9,7) = 'KPPg_SLT','DFrI_SLT','DFrE_SLT','DFxE_SLT','DFyE_SLT','ADVr_SLT','ADVx_SLT','ADVy_SLT','TOTSTEND',
   fileName(7) = 'diagsTendency',

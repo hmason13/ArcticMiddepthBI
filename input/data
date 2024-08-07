@@ -77,8 +77,8 @@
 # timestepping parameters for pickup
  deltaT=100.0,
  nIter0=788400, 
- nTimeSteps=157680, 
- dumpFreq=86400., 
+ nTimeSteps=630720, 
+ dumpFreq=432000., 
  taveFreq=6912000.,
  monitorFreq=86400., 
  chkPtFreq=31968000.,
