@@ -1,0 +1,109 @@
+
+# Continuous equation parameters 
+ &PARM01
+# viscosity
+ viscAz=5.6614E-04,
+ viscC4Leith=2.15,
+ viscC4LeithD=2.15,
+ viscA4GridMax=0.8,
+ useAreaViscLength=.TRUE.,
+ highOrderVorticity=.TRUE.,
+
+# diffusivity
+ saltAdvScheme=7,
+ diffKzS=5.44e-7,
+ diffKzT=5.44e-7,
+ tempAdvScheme=7,
+
+ nonHydrostatic=.FALSE.,
+ saltStepping=.TRUE.,
+ tempStepping=.FALSE.,
+ staggerTimeStep=.TRUE.,
+ multiDimAdvection=.TRUE.,
+ vectorInvariantMomentum=.TRUE.,
+
+# equation of state
+ eosType='LINEAR',
+ tAlpha=0,
+ sBeta=7.4E-4,
+ sRef=33.,
+ tRef=0.,
+ rhonil=1000.,
+
+# boundary conditions
+ no_slip_sides=.FALSE.,
+ no_slip_bottom=.TRUE.,
+ bottomDragQuadratic=0.0021,
+ 
+# free surface params
+ rigidLid=.FALSE.,
+ implicitFreeSurface=.TRUE.,
+ nonlinFreeSurf=4,
+ hFacInf=0.1,
+ exactConserv=.TRUE.,
+ 
+# physical parameters
+ f0=1.4E-04,
+ beta=0.0,
+ gravity=9.81,
+
+# implicit diffusion and convective adjustment
+ implicitDiffusion=.TRUE.,
+ implicitViscosity=.TRUE.,
+
+
+# C-V scheme for Coriolis term
+ useCDscheme=.FALSE.,
+ &
+
+# elliptic solver parameters
+ &PARM02
+ cg2dMaxIters=500,
+ cg2dTargetResidual=1.000000E-12,
+ &
+
+
+ &PARM03
+# timestepping parameters for spinup
+# deltaT=400.0,
+# nIter0=0,
+# nTimeSteps=788400,
+# dumpFreq=20736000.,
+# monitorFreq=2000000.,
+# chkPtFreq=63936000.,
+# writePickupAtEnd=.TRUE.,
+# tracForcingOutAB=1,
+
+# timestepping parameters for pickup
+ deltaT=100.0,
+ nIter0=788400, 
+ nTimeSteps=630720, 
+ dumpFreq=432000., 
+ taveFreq=6912000.,
+ monitorFreq=86400., 
+ chkPtFreq=31968000.,
+ writePickupAtEnd=.TRUE.,
+ tracForcingOutAB=1,
+ pickupStrictlyMatch=.TRUE.,
+ pickupSuff='ckptA',
+ &
+
+# gridding parameters
+ &PARM04
+ usingCartesianGrid=.TRUE.,
+ dXspacing=2.E03,
+ dYspacing=2.E03,
+ delRFile='eccoZCoordSpacingPadded.bin',
+ &
+
+# Input datasets
+ &PARM05
+ bathyFile='bathy-2km.bin',
+# zonalWindFile='zonalWindFile.bin',
+# thetaClimFile='thetaClimFile.bin',
+ hydrogThetaFile='temp-2km.bin',
+ hydrogSaltFile='perturbedSalt-2km.bin',
+ vVelInitFile='v-2km.bin',
+ uVelInitFile='u-2km.bin',
+ pSurfInitFile='eta-2km.bin',
+ &
