@@ -21,11 +21,11 @@ with this modified version. The data.rbcs file still defines the target fields, 
 toggles the forcing for each field.
 
 ## Other details
-The modified forcing is mpi friendly for my particular build choices. 
-Specifically:
-#define GLOBAL_SUM_ORDER_TILES
-#undef GLOBAL_SUM_SEND_RECV
-#define ALLOW_USE_MPI
-nSx = 1
-nSy = 1
+The modified forcing is mpi friendly for my particular build choices.\
+Specifically:\
+#define GLOBAL_SUM_ORDER_TILES\
+#undef GLOBAL_SUM_SEND_RECV\
+#define ALLOW_USE_MPI\
+nSx = 1\
+nSy = 1\
 **An important note**: this setup is multi process but single threaded!
