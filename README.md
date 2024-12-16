@@ -29,4 +29,11 @@ Specifically:\
 #define ALLOW_USE_MPI\
 nSx = 1\
 nSy = 1\
-**An important note**: this setup is multi process but single threaded!
+This setup is multi process but single threaded!\
+
+The link to the ECCO files used in initialization is below. All twelve files are necessary here
+because an average is taken over the entire year.\
+https://cmr.earthdata.nasa.gov/virtual-directory/collections/C1990404798-POCLOUD/temporal/2017\
+
+Files to analyze the model output and produce the submitted figures are also in the respository. Some
+notebooks present were not required to perform the final analyses.
