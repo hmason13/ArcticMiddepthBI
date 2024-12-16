@@ -26,7 +26,7 @@ hDegLon  = hDegLat * np.cos(2*np.pi*78/360)
 
 
 # ## ECCO processing
- 
+# https://cmr.earthdata.nasa.gov/virtual-directory/collections/C1990404798-POCLOUD/temporal/2017 
 # This section is to load the ECCO data and perform the necessary
 # averaging.
 
