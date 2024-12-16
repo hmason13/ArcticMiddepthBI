@@ -28,7 +28,7 @@
  sBeta=7.4E-4,
  sRef=33.,
  tRef=0.,
- rhonil=1000.,
+ rhonil=1029.,
 
 # boundary conditions
  no_slip_sides=.FALSE.,
