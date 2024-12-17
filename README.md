@@ -37,3 +37,5 @@ https://cmr.earthdata.nasa.gov/virtual-directory/collections/C1990404798-POCLOUD
 
 Files to analyze the model output and produce the submitted figures are also in the respository. Some
 notebooks present were not required to perform the final analyses.
+
+MITgcm checkpoint67y
